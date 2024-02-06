@@ -1,4 +1,7 @@
 package com.booking.hotelbookingapp.service.impl;
 
-public class BookedRoomServiceImpl {
+import com.booking.hotelbookingapp.service.BookedRoomService;
+
+
+public class BookedRoomServiceImpl implements BookedRoomService {
 }

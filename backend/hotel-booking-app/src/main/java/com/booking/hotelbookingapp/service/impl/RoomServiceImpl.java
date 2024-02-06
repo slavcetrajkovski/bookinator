@@ -1,5 +1,6 @@
 package com.booking.hotelbookingapp.service.impl;
 
+import com.booking.hotelbookingapp.exception.ResourceNotFoundException;
 import com.booking.hotelbookingapp.model.Room;
 import com.booking.hotelbookingapp.repository.RoomRepository;
 import com.booking.hotelbookingapp.service.RoomService;
@@ -37,5 +38,22 @@ public class RoomServiceImpl implements RoomService {
     @Override
     public List<String> getAllRoomTypes() {
         return roomRepository.findDistinctRoomTypes();
+    }
+
+    @Override
+    public List<Room> getAllRooms() {
+        return roomRepository.findAll();
+    }
+
+    @Override
+    public byte[] getRoomPhotoByRoomId(Long id) throws SQLException {
+        Room r = roomRepository.findById(id).orElseThrow(
+                () -> new ResourceNotFoundException("Sorry, the room was not found!"));
+
+        Blob photoBlob = r.getPhoto();
+        if(photoBlob != null) {
+            return photoBlob.getBytes(1, (int) photoBlob.length());
+        }
+        return null;
     }
 }

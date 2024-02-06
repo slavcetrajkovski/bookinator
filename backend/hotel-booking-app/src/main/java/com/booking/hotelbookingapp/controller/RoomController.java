@@ -1,16 +1,23 @@
 package com.booking.hotelbookingapp.controller;
 
+import com.booking.hotelbookingapp.exception.PhotoRetrievalException;
+import com.booking.hotelbookingapp.model.BookedRoom;
 import com.booking.hotelbookingapp.model.Room;
+import com.booking.hotelbookingapp.response.BookingResponse;
 import com.booking.hotelbookingapp.response.RoomResponse;
 import com.booking.hotelbookingapp.service.RoomService;
+import com.booking.hotelbookingapp.service.impl.BookingService;
 import lombok.RequiredArgsConstructor;
+import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.sql.Blob;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -19,6 +26,7 @@ import java.util.List;
 public class RoomController {
 
     private final RoomService roomService;
+    private final BookingService bookingService;
 
     // Adding a new option for a room
     @CrossOrigin(origins = "http://localhost:5173")
@@ -38,5 +46,51 @@ public class RoomController {
     @GetMapping("/room/types")
     public List<String> getRoomTypes() {
         return roomService.getAllRoomTypes();
+    }
+
+    @CrossOrigin(origins = "http://localhost:5173")
+    @GetMapping("/all-rooms")
+    public ResponseEntity<List<RoomResponse>> getAllRooms() throws SQLException {
+        List<Room> rooms = roomService.getAllRooms();
+        List<RoomResponse> roomResponses = new ArrayList<>();
+        for(Room room : rooms) {
+            byte[] photoBytes = roomService.getRoomPhotoByRoomId(room.getId());
+            if(photoBytes != null && photoBytes.length > 0) {
+                String base64Photo = Base64.encodeBase64String(photoBytes);
+                RoomResponse roomResponse = getRoomResponse(room);
+                roomResponse.setPhoto(base64Photo);
+                roomResponses.add(roomResponse);
+            }
+        }
+        return ResponseEntity.ok(roomResponses);
+    }
+
+    // Retrieving and sending over the booked rooms
+    private RoomResponse getRoomResponse(Room room) {
+        List<BookedRoom> bookings = getAllBookingsByRoomId(room.getId());
+        List<BookingResponse> bookingInfo = bookings
+                .stream().map(booking -> new BookingResponse(booking.getBookingId(),
+                        booking.getCheckInDate(),
+                        booking.getCheckOutDate(),
+                        booking.getBookingConfirmationCode())).toList();
+        byte[] photoBytes = null;
+        Blob photoBlob = room.getPhoto();
+        if(photoBlob != null) {
+            try {
+                photoBytes = photoBlob.getBytes(1, (int) photoBlob.length());
+            } catch (SQLException e) {
+                throw new PhotoRetrievalException("Error retrieving photo!");
+            }
+        }
+        return new RoomResponse(room.getId(),
+                room.getRoomType(),
+                room.getRoomPrice(),
+                room.isBooked(),
+                photoBytes,
+                bookingInfo);
+    }
+
+    private List<BookedRoom> getAllBookingsByRoomId(Long id) {
+        return bookingService.getAllBookingsByRoomId(id);
     }
 }

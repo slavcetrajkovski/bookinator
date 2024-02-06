@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.commons.lang3.RandomStringUtils;
+import org.hibernate.annotations.Type;
 
 import java.math.BigDecimal;
 import java.sql.Blob;
@@ -28,6 +29,7 @@ public class Room {
     private boolean isBooked = false;
 
     @Lob
+    @Basic(fetch = FetchType.LAZY)
     private Blob photo;
 
     @OneToMany(mappedBy = "room", fetch = FetchType.LAZY, cascade = CascadeType.ALL)

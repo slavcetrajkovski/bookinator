@@ -5,12 +5,13 @@ const RoomFilter = ({data, setFilteredData}) => {
 
 
     const handleSelectChange = (e) => {
-        const selectedRoomType = e.target.value
-        setFilter(selectedRoomType)
-        const filteredRooms = data.filter((room) => 
-        room.roomType.toLowerCase().includes(selectedRoomType))
+      const selectedRoomType = e.target.value;
+      setFilter(selectedRoomType);
+      const filteredRooms = data.filter((room) =>
+        room.roomType.toLowerCase().includes(selectedRoomType.toLowerCase())
+      );
 
-        setFilteredData(filteredRooms)
+      setFilteredData(filteredRooms);
     }
 
     const clearFilter = () => {
@@ -28,11 +29,11 @@ const RoomFilter = ({data, setFilteredData}) => {
       <select className="form-select" value={filter} onChange={handleSelectChange}>
 
         <option value={""}>
-            Select a room type to filter...
+            Select a room type
         </option>
         {roomTypes.map((type, index) => (
-            <option key={index} value={type}>
-                {type}
+            <option key={index} value={String(type)}>
+                {String(type)}
             </option>
         ))}
       </select> 
@@ -42,4 +43,4 @@ const RoomFilter = ({data, setFilteredData}) => {
   );
 }
 
-export default RoomFilter
+export default RoomFilter;

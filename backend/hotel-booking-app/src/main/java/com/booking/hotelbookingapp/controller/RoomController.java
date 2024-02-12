@@ -4,10 +4,9 @@ import com.booking.hotelbookingapp.exception.PhotoRetrievalException;
 import com.booking.hotelbookingapp.exception.ResourceNotFoundException;
 import com.booking.hotelbookingapp.model.BookedRoom;
 import com.booking.hotelbookingapp.model.Room;
-import com.booking.hotelbookingapp.response.BookingResponse;
 import com.booking.hotelbookingapp.response.RoomResponse;
 import com.booking.hotelbookingapp.service.RoomService;
-import com.booking.hotelbookingapp.service.impl.BookingService;
+import com.booking.hotelbookingapp.service.impl.BookingServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.http.HttpStatus;
@@ -30,7 +29,7 @@ import java.util.Optional;
 public class RoomController {
 
     private final RoomService roomService;
-    private final BookingService bookingService;
+    private final BookingServiceImpl bookingService;
 
     // Adding a new option for a room
     @CrossOrigin(origins = "http://localhost:5173")

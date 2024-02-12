@@ -30,7 +30,7 @@ public class BookingResponse {
 
     private String bookingConfirmationCode;
 
-    private Room room;
+    private RoomResponse roomResponse;
 
     public BookingResponse(Long bookingId, LocalDate checkInDate, LocalDate checkOutDate,
                            String bookingConfirmationCode) {

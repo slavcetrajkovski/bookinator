@@ -63,7 +63,7 @@ const BookingForm = () => {
       return false
     } else if(!moment(booking.checkInDate).isSameOrAfter(currentDate, 'day')) {
       setErrorMessage("Check-in date must be on or after the current date")
-      return false;
+      return false
     } else {
       setErrorMessage("");
       return true;

@@ -25,6 +25,7 @@ public class BookingController {
     private final BookingService bookingService;
     private final RoomService roomService;
 
+    @CrossOrigin(origins = "http://localhost:5173")
     @GetMapping("/all-bookings")
     public ResponseEntity<List<BookingResponse>> getAllBookings() {
         List<BookedRoom> bookings = bookingService.getAllBookings();
@@ -37,6 +38,7 @@ public class BookingController {
         return ResponseEntity.ok(bookingResponses);
     }
 
+    @CrossOrigin(origins = "http://localhost:5173")
     @GetMapping("/confirmation/{confirmationCode}")
     public ResponseEntity<?> getBookingByConfirmationCode(@PathVariable String confirmationCode) {
         try {
@@ -48,6 +50,7 @@ public class BookingController {
         }
     }
 
+    @CrossOrigin(origins = "http://localhost:5173")
     @PostMapping("/room/{roomId}/booking")
     public ResponseEntity<?> saveBooking(@PathVariable Long roomId, @RequestBody BookedRoom bookingRequest) {
         try {
@@ -58,6 +61,7 @@ public class BookingController {
         }
     }
 
+    @CrossOrigin(origins = "http://localhost:5173")
     @DeleteMapping("/booking/{bookingId}/delete")
     public void cancelBooking(@PathVariable Long bookingId) {
         bookingService.cancelBooking(bookingId);
